@@ -2,21 +2,19 @@ package model;
 
 public class PedidoEncomienda extends Pedido {
 
-    public PedidoEncomienda(int idPedido, String direccionEntrega) {
-        super(idPedido, direccionEntrega, "Encomienda");
+    public PedidoEncomienda(int idPedido, String direccionEntrega, double distanciaKm) {
+        super(idPedido, direccionEntrega, distanciaKm);
     }
 
     @Override
-    public void asignarRepartidor() {
-        System.out.println("[Pedido Encomienda] Asignando repartidor...");
-        System.out.println("→ Validando peso y embalaje... OK");
-        System.out.println("→ Buscando vehículo de carga adecuado.");
+    public int calcularTiempoEntrega() {
+        return (int) Math.round(20 + (1.5 * getDistanciaKm()));
     }
 
     @Override
-    public void asignarRepartidor(String nombreRepartidor) {
-        System.out.println("[Pedido Encomienda] Asignando repartidor...");
-        System.out.println("→ Validando peso y embalaje... OK");
-        System.out.println("→ Pedido asignado a " + nombreRepartidor);
+    public void mostrarResumen() {
+        System.out.println("PedidoEncomienda #" + getIdPedido());
+        System.out.println("Dirección: " + getDireccionEntrega());
+        System.out.println("Distancia: " + getDistanciaKm() + " km");
     }
 }
