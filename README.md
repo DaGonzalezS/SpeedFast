@@ -1,104 +1,138 @@
-# SpeedFast - Sistema de Gestión de Pedidos
+# SpeedFast - Semana 3
 
-Proyecto desarrollado para la asignatura **Desarrollo Orientado a Objetos II** de Duoc UC.
+Proyecto correspondiente a la **Semana 3** de la asignatura **Desarrollo Orientado a Objetos II**.
 
-## Descripción del Proyecto
+En esta actividad se amplió el sistema de entregas **SpeedFast**, incorporando conceptos de:
 
-SpeedFast es una empresa de reparto a domicilio que ofrece diferentes tipos de servicios. En esta segunda etapa del proyecto se implementa una estructura basada en **abstracción, herencia y sobrescritura de métodos**, permitiendo representar distintos tipos de pedidos con comportamientos específicos.
-
-El sistema utiliza una clase abstracta llamada `Pedido`, que contiene los atributos y comportamientos comunes de todos los pedidos, mientras que las subclases implementan su propia lógica para calcular el tiempo estimado de entrega.
-
----
-
-## Tipos de Pedidos y Tiempo de Entrega
-
-El sistema gestiona tres tipos de pedidos, cada uno con una lógica diferente para calcular su tiempo estimado de entrega:
-
-1. **PedidoComida**
-   - Tiempo base de **15 minutos**.
-   - Se agregan **2 minutos por cada kilómetro** de distancia.
-
-2. **PedidoEncomienda**
-   - Tiempo base de **20 minutos**.
-   - Se agregan **1.5 minutos por cada kilómetro** de distancia.
-   - El resultado se ajusta a un valor entero.
-
-3. **PedidoExpress**
-   - Tiempo base de **10 minutos**.
-   - Si la distancia es superior a **5 kilómetros**, se agregan **5 minutos adicionales**.
+- Herencia
+- Polimorfismo
+- Abstracción
+- Interfaces
+- Sobrecarga y sobrescritura de métodos
 
 ---
 
-## Estructura de Clases
+## Funcionalidades implementadas
 
-- **`Pedido`** *(Clase Abstracta)*:
-  - Contiene los atributos encapsulados:
-    - `idPedido`
-    - `direccionEntrega`
-    - `distanciaKm`
-  - Implementa el método `mostrarResumen()`.
-  - Declara el método abstracto `calcularTiempoEntrega()`.
+El sistema permite gestionar distintos tipos de pedidos:
 
-- **`PedidoComida`** *(Subclase)*:
-  - Hereda de `Pedido`.
-  - Sobrescribe `calcularTiempoEntrega()`.
-  - Calcula el tiempo utilizando la fórmula:
-    `15 + (2 × distanciaKm)`.
+- `PedidoComida`
+- `PedidoEncomienda`
+- `PedidoExpress`
 
-- **`PedidoEncomienda`** *(Subclase)*:
-  - Hereda de `Pedido`.
-  - Sobrescribe `calcularTiempoEntrega()`.
-  - Calcula el tiempo utilizando la fórmula:
-    `20 + (1.5 × distanciaKm)`.
+Cada tipo de pedido posee su propia lógica para:
 
-- **`PedidoExpress`** *(Subclase)*:
-  - Hereda de `Pedido`.
-  - Sobrescribe `calcularTiempoEntrega()`.
-  - Retorna 10 minutos para distancias de hasta 5 km y 15 minutos cuando la distancia supera los 5 km.
+- Asignar repartidores.
+- Calcular el tiempo estimado de entrega.
+- Mostrar información del pedido.
 
-- **`Main`** *(Clase Principal)*:
-  - Instancia un objeto de cada tipo de pedido.
-  - Ejecuta el método `mostrarResumen()`.
-  - Ejecuta `calcularTiempoEntrega()`.
-  - Muestra en consola los tiempos estimados de entrega de cada pedido.
+También se implementaron operaciones de:
+
+- Despacho de pedidos.
+- Cancelación de pedidos.
+- Visualización del historial de entregas.
 
 ---
 
-## Conceptos de Programación Orientada a Objetos Aplicados
+## Clase abstracta
 
-Durante el desarrollo del proyecto se aplican los siguientes conceptos:
+Se utilizó la clase abstracta:
 
-- **Abstracción:** mediante la clase abstracta `Pedido`.
-- **Encapsulamiento:** mediante atributos privados y métodos de acceso.
-- **Herencia:** las clases `PedidoComida`, `PedidoEncomienda` y `PedidoExpress` heredan de `Pedido`.
-- **Sobrescritura (`@Override`):** cada subclase implementa su propia versión de `calcularTiempoEntrega()`.
-- **Polimorfismo:** los diferentes tipos de pedidos pueden ser tratados mediante referencias de tipo `Pedido`.
-- **Reutilización de código:** los atributos y comportamientos comunes se concentran en la clase padre.
+```java
+Pedido
+```
+
+Esta clase contiene atributos y comportamientos comunes para todos los pedidos, además del método abstracto:
+
+```java
+calcularTiempoEntrega()
+```
+
+Cada subclase implementa este método según sus propias reglas de negocio.
 
 ---
 
-## Ejemplo de Ejecución
+## Polimorfismo
+
+Se aplicó polimorfismo mediante sobrescritura de métodos como:
+
+```java
+asignarRepartidor()
+calcularTiempoEntrega()
+mostrarResumen()
+```
+
+También se implementó sobrecarga mediante:
+
+```java
+asignarRepartidor()
+```
+
+y:
+
+```java
+asignarRepartidor(String nombre)
+```
+
+Esto permite realizar una asignación automática o manual del repartidor.
+
+---
+
+## Interfaces
+
+Se implementaron las siguientes interfaces:
 
 ```text
-PedidoComida #1
-Dirección: Av. Italia 456
-Distancia: 4.0 km
-Tiempo estimado de entrega: 23 minutos
+Despachable
+Cancelable
+Rastreable
+```
 
-PedidoEncomienda #2
-Dirección: Av. Independencia 123
-Distancia: 6.0 km
-Tiempo estimado de entrega: 29 minutos
+Cada una define una responsabilidad específica:
 
-PedidoExpress #3
-Dirección: Av. Apoquindo 1500
-Distancia: 7.0 km
-Tiempo estimado de entrega: 15 minutos
+```java
+despachar()
+cancelar()
+verHistorial()
 ```
 
 ---
 
-## Tecnologías Utilizadas
+## Estructura del proyecto
+
+```text
+src/
+├── interfaces/
+│   ├── Cancelable.java
+│   ├── Despachable.java
+│   └── Rastreable.java
+│
+├── model/
+│   ├── Pedido.java
+│   ├── PedidoComida.java
+│   ├── PedidoEncomienda.java
+│   └── PedidoExpress.java
+│
+└── ui/
+    └── Main.java
+```
+
+---
+
+## Ejecución
+
+La clase `Main` simula distintos casos de pedidos, mostrando:
+
+- Asignación automática de repartidores.
+- Asignación manual de repartidor.
+- Cálculo del tiempo estimado.
+- Despacho de pedidos.
+- Cancelación de pedidos.
+- Historial de entregas.
+
+---
+
+## Tecnologías utilizadas
 
 - Java
 - IntelliJ IDEA
@@ -110,5 +144,3 @@ Tiempo estimado de entrega: 15 minutos
 ## Autor
 
 Daniel González
-
-Proyecto académico desarrollado para **Desarrollo Orientado a Objetos II - Duoc UC**.
