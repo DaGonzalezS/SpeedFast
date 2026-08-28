@@ -7,6 +7,11 @@ public class PedidoExpress extends Pedido {
     }
 
     @Override
+    public void asignarRepartidor() {
+        setRepartidor("Carlos Soto");
+    }
+
+    @Override
     public int calcularTiempoEntrega() {
         if (getDistanciaKm() > 5) {
             return 15;
@@ -17,8 +22,7 @@ public class PedidoExpress extends Pedido {
 
     @Override
     public void mostrarResumen() {
-        System.out.println("PedidoExpress #" + getIdPedido());
-        System.out.println("Dirección: " + getDireccionEntrega());
-        System.out.println("Distancia: " + getDistanciaKm() + " km");
+        System.out.println("[Pedido Express]");
+        super.mostrarResumen();
     }
 }

@@ -7,14 +7,18 @@ public class PedidoComida extends Pedido {
     }
 
     @Override
+    public void asignarRepartidor() {
+        setRepartidor("Luis Díaz");
+    }
+
+    @Override
     public int calcularTiempoEntrega() {
         return (int) (15 + (2 * getDistanciaKm()));
     }
 
     @Override
     public void mostrarResumen() {
-        System.out.println("PedidoComida #" + getIdPedido());
-        System.out.println("Dirección: " + getDireccionEntrega());
-        System.out.println("Distancia: " + getDistanciaKm() + " km");
+        System.out.println("[Pedido Comida]");
+        super.mostrarResumen();
     }
 }
