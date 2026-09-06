@@ -1,138 +1,82 @@
-# SpeedFast - Semana 3
+# SpeedFast - Sistema de Gestión de Pedidos
 
-Proyecto correspondiente a la **Semana 3** de la asignatura **Desarrollo Orientado a Objetos II**.
+Proyecto desarrollado para la asignatura **Desarrollo Orientado a Objetos II** de Duoc UC.
 
-En esta actividad se amplió el sistema de entregas **SpeedFast**, incorporando conceptos de:
+## Descripción
 
-- Herencia
-- Polimorfismo
-- Abstracción
-- Interfaces
-- Sobrecarga y sobrescritura de métodos
+SpeedFast es un sistema de gestión de pedidos que trabaja con distintos tipos de entregas.
+
+En esta etapa se agregó **programación concurrente en Java**, permitiendo que varios repartidores realicen entregas al mismo tiempo.
 
 ---
 
-## Funcionalidades implementadas
+## Clases principales
 
-El sistema permite gestionar distintos tipos de pedidos:
-
+- `Pedido`
 - `PedidoComida`
 - `PedidoEncomienda`
 - `PedidoExpress`
+- `Repartidor`
+- `Main`
 
-Cada tipo de pedido posee su propia lógica para:
+También se utilizan las interfaces:
 
-- Asignar repartidores.
-- Calcular el tiempo estimado de entrega.
-- Mostrar información del pedido.
-
-También se implementaron operaciones de:
-
-- Despacho de pedidos.
-- Cancelación de pedidos.
-- Visualización del historial de entregas.
+- `Despachable`
+- `Cancelable`
+- `Rastreable`
 
 ---
 
-## Clase abstracta
+## Concurrencia
 
-Se utilizó la clase abstracta:
+La clase `Repartidor` implementa `Runnable` y contiene una lista de pedidos asignados.
 
-```java
-Pedido
-```
-
-Esta clase contiene atributos y comportamientos comunes para todos los pedidos, además del método abstracto:
+Cada repartidor ejecuta sus entregas mediante el método:
 
 ```java
-calcularTiempoEntrega()
+run()
 ```
 
-Cada subclase implementa este método según sus propias reglas de negocio.
-
----
-
-## Polimorfismo
-
-Se aplicó polimorfismo mediante sobrescritura de métodos como:
+Para simular el tiempo de entrega se utiliza:
 
 ```java
-asignarRepartidor()
-calcularTiempoEntrega()
-mostrarResumen()
+Thread.sleep()
 ```
 
-También se implementó sobrecarga mediante:
+Los repartidores se ejecutan en paralelo utilizando:
 
 ```java
-asignarRepartidor()
-```
-
-y:
-
-```java
-asignarRepartidor(String nombre)
-```
-
-Esto permite realizar una asignación automática o manual del repartidor.
-
----
-
-## Interfaces
-
-Se implementaron las siguientes interfaces:
-
-```text
-Despachable
-Cancelable
-Rastreable
-```
-
-Cada una define una responsabilidad específica:
-
-```java
-despachar()
-cancelar()
-verHistorial()
+ExecutorService
 ```
 
 ---
 
-## Estructura del proyecto
+## Funcionamiento
 
-```text
-src/
-├── interfaces/
-│   ├── Cancelable.java
-│   ├── Despachable.java
-│   └── Rastreable.java
-│
-├── model/
-│   ├── Pedido.java
-│   ├── PedidoComida.java
-│   ├── PedidoEncomienda.java
-│   └── PedidoExpress.java
-│
-└── ui/
-    └── Main.java
-```
+El programa:
+
+- Crea diferentes tipos de pedidos.
+- Crea tres repartidores.
+- Asigna dos pedidos a cada repartidor.
+- Ejecuta las entregas de forma concurrente.
+- Muestra el avance de cada repartidor por consola.
 
 ---
 
-## Ejecución
+## Conceptos utilizados
 
-La clase `Main` simula distintos casos de pedidos, mostrando:
-
-- Asignación automática de repartidores.
-- Asignación manual de repartidor.
-- Cálculo del tiempo estimado.
-- Despacho de pedidos.
-- Cancelación de pedidos.
-- Historial de entregas.
+- Abstracción
+- Herencia
+- Polimorfismo
+- Interfaces
+- `Runnable`
+- `Thread.sleep()`
+- `ExecutorService`
+- Manejo de excepciones
 
 ---
 
-## Tecnologías utilizadas
+## Tecnologías
 
 - Java
 - IntelliJ IDEA
