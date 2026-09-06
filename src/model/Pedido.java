@@ -5,6 +5,8 @@ import interfaces.Despachable;
 import interfaces.Rastreable;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public abstract class Pedido implements Despachable, Cancelable, Rastreable {
 
@@ -15,7 +17,8 @@ public abstract class Pedido implements Despachable, Cancelable, Rastreable {
     private boolean cancelado;
     private boolean despachado;
 
-    private static ArrayList<String> historial = new ArrayList<>();
+    private static final List<String> historial =
+            Collections.synchronizedList(new ArrayList<>());
 
     public Pedido(int idPedido, String direccionEntrega, double distanciaKm) {
         this.idPedido = idPedido;
@@ -107,8 +110,10 @@ public abstract class Pedido implements Despachable, Cancelable, Rastreable {
             return;
         }
 
-        for (String registro : historial) {
-            System.out.println("- " + registro);
+        synchronized (historial) {
+            for (String registro : historial) {
+                System.out.println("- " + registro);
+            }
         }
     }
 }

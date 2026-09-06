@@ -2,6 +2,10 @@ package ui;
 
 import model.*;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -24,43 +28,60 @@ public class Main {
                 6
         );
 
-        // ASIGNACIÓN AUTOMÁTICA
-        pedido1.asignarRepartidor();
-        pedido2.asignarRepartidor();
+        Pedido pedido4 = new PedidoComida(
+                104,
+                "Gran Avenida 2300",
+                5
+        );
 
-        // ASIGNACIÓN MANUAL
-        pedido3.asignarRepartidor("Felipe Morales");
+        Pedido pedido5 = new PedidoEncomienda(
+                105,
+                "Av. Grecia 880",
+                3
+        );
 
-        System.out.println("=== PEDIDO 1 ===");
-        pedido1.mostrarResumen();
-        System.out.println("Tiempo estimado: "
-                + pedido1.calcularTiempoEntrega()
-                + " minutos");
+        Pedido pedido6 = new PedidoExpress(
+                106,
+                "Av. Providencia 1200",
+                8
+        );
 
-        pedido1.despachar();
+        Repartidor camila = new Repartidor("Camila");
+        Repartidor luis = new Repartidor("Luis");
+        Repartidor pedro = new Repartidor("Pedro");
+
+        camila.agregarPedido(pedido1);
+        camila.agregarPedido(pedido4);
+
+        luis.agregarPedido(pedido2);
+        luis.agregarPedido(pedido5);
+
+        pedro.agregarPedido(pedido3);
+        pedro.agregarPedido(pedido6);
+
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+
+        System.out.println("=== INICIO DE ENTREGAS ===");
+
+        executor.execute(camila);
+        executor.execute(luis);
+        executor.execute(pedro);
+
+        executor.shutdown();
+
+        try {
+            if (!executor.awaitTermination(1, TimeUnit.MINUTES)) {
+                System.out.println("La simulación excedió el tiempo máximo.");
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            System.out.println("La ejecución principal fue interrumpida.");
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
 
         System.out.println();
-
-        System.out.println("=== PEDIDO 2 ===");
-        pedido2.mostrarResumen();
-        System.out.println("Tiempo estimado: "
-                + pedido2.calcularTiempoEntrega()
-                + " minutos");
-
-        pedido2.despachar();
-
-        System.out.println();
-
-        System.out.println("=== PEDIDO 3 ===");
-        pedido3.mostrarResumen();
-        System.out.println("Tiempo estimado: "
-                + pedido3.calcularTiempoEntrega()
-                + " minutos");
-
-        pedido3.cancelar();
-
-        System.out.println();
-
+        System.out.println("=== TODAS LAS ENTREGAS FINALIZARON ===");
         pedido1.verHistorial();
     }
 }
