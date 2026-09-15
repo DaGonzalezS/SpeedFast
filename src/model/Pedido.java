@@ -9,51 +9,75 @@ import java.util.Collections;
 import java.util.List;
 
 public abstract class Pedido implements Despachable, Cancelable, Rastreable {
-
-    private int idPedido;
+    private int id;
     private String direccionEntrega;
     private double distanciaKm;
     private String repartidor;
+    private EstadoPedido estado;
     private boolean cancelado;
-    private boolean despachado;
 
     private static final List<String> historial =
             Collections.synchronizedList(new ArrayList<>());
 
-    public Pedido(int idPedido, String direccionEntrega, double distanciaKm) {
-        this.idPedido = idPedido;
+    public Pedido(int id, String direccionEntrega, double distanciaKm) {
+        this.id = id;
         this.direccionEntrega = direccionEntrega;
         this.distanciaKm = distanciaKm;
         this.repartidor = "Sin asignar";
+        this.estado = EstadoPedido.PENDIENTE;
         this.cancelado = false;
-        this.despachado = false;
     }
 
-    public int getIdPedido() {
-        return idPedido;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getDireccionEntrega() {
         return direccionEntrega;
     }
 
+    public void setDireccionEntrega(String direccionEntrega) {
+        this.direccionEntrega = direccionEntrega;
+    }
+
     public double getDistanciaKm() {
         return distanciaKm;
+    }
+
+    public void setDistanciaKm(double distanciaKm) {
+        this.distanciaKm = distanciaKm;
     }
 
     public String getRepartidor() {
         return repartidor;
     }
 
-    protected void setRepartidor(String repartidor) {
+    public void setRepartidor(String repartidor) {
         this.repartidor = repartidor;
     }
 
+    public EstadoPedido getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoPedido nuevoEstado) {
+        this.estado = nuevoEstado;
+    }
+
+    public boolean estaDisponible() {
+        return !cancelado && estado == EstadoPedido.PENDIENTE;
+    }
+
     public void mostrarResumen() {
-        System.out.println("Pedido #" + idPedido);
-        System.out.println("Dirección: " + direccionEntrega);
+        System.out.println("Pedido #" + id);
+        System.out.println("Direccion: " + direccionEntrega);
         System.out.println("Distancia: " + distanciaKm + " km");
         System.out.println("Repartidor asignado: " + repartidor);
+        System.out.println("Estado: " + estado);
     }
 
     public abstract void asignarRepartidor();
@@ -66,43 +90,32 @@ public abstract class Pedido implements Despachable, Cancelable, Rastreable {
 
     @Override
     public void despachar() {
-
         if (cancelado) {
-            System.out.println("El pedido #" + idPedido
-                    + " está cancelado y no puede ser despachado.");
+            System.out.println("El pedido #" + id
+                    + " esta cancelado y no puede ser despachado.");
             return;
         }
 
-        despachado = true;
-
-        System.out.println("Pedido #" + idPedido
-                + " despachado correctamente.");
-
-        historial.add(
-                getClass().getSimpleName()
-                        + " #" + idPedido
-                        + " - entregado por " + repartidor
-        );
+        estado = EstadoPedido.ENTREGADO;
+        historial.add(getClass().getSimpleName() + " #" + id
+                + " - entregado por " + repartidor);
     }
 
     @Override
     public void cancelar() {
-
-        if (despachado) {
-            System.out.println("El pedido #" + idPedido
-                    + " ya fue despachado y no puede cancelarse.");
+        if (estado == EstadoPedido.EN_REPARTO
+                || estado == EstadoPedido.ENTREGADO) {
+            System.out.println("El pedido #" + id
+                    + " ya esta en proceso o fue entregado.");
             return;
         }
 
         cancelado = true;
-
-        System.out.println("Pedido #" + idPedido
-                + " cancelado exitosamente.");
+        System.out.println("Pedido #" + id + " cancelado exitosamente.");
     }
 
     @Override
     public void verHistorial() {
-
         System.out.println("Historial:");
 
         if (historial.isEmpty()) {
@@ -115,5 +128,16 @@ public abstract class Pedido implements Despachable, Cancelable, Rastreable {
                 System.out.println("- " + registro);
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Pedido{" +
+                "id=" + id +
+                ", direccionEntrega='" + direccionEntrega + '\'' +
+                ", distanciaKm=" + distanciaKm +
+                ", repartidor='" + repartidor + '\'' +
+                ", estado=" + estado +
+                '}';
     }
 }

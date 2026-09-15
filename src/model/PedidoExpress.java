@@ -1,9 +1,8 @@
 package model;
 
 public class PedidoExpress extends Pedido {
-
-    public PedidoExpress(int idPedido, String direccionEntrega, double distanciaKm) {
-        super(idPedido, direccionEntrega, distanciaKm);
+    public PedidoExpress(int id, String direccionEntrega, double distanciaKm) {
+        super(id, direccionEntrega, distanciaKm);
     }
 
     @Override
@@ -13,11 +12,7 @@ public class PedidoExpress extends Pedido {
 
     @Override
     public int calcularTiempoEntrega() {
-        if (getDistanciaKm() > 5) {
-            return 15;
-        }
-
-        return 10;
+        return getDistanciaKm() > 5 ? 15 : 10;
     }
 
     @Override
@@ -26,3 +21,4 @@ public class PedidoExpress extends Pedido {
         super.mostrarResumen();
     }
 }
+

@@ -1,14 +1,13 @@
 package model;
 
 public class PedidoComida extends Pedido {
-
-    public PedidoComida(int idPedido, String direccionEntrega, double distanciaKm) {
-        super(idPedido, direccionEntrega, distanciaKm);
+    public PedidoComida(int id, String direccionEntrega, double distanciaKm) {
+        super(id, direccionEntrega, distanciaKm);
     }
 
     @Override
     public void asignarRepartidor() {
-        setRepartidor("Luis Díaz");
+        setRepartidor("Luis Diaz");
     }
 
     @Override
