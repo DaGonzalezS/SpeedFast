@@ -1,14 +1,27 @@
-# SpeedFast - Sistema de Gestión de Pedidos
+# SpeedFast - Semana 5
 
-Proyecto desarrollado para la asignatura **Desarrollo Orientado a Objetos II** de Duoc UC.
+Proyecto correspondiente a la actividad de la **Semana 5** de la asignatura Desarrollo Orientado a Objetos II.
 
-## Descripción
+El programa simula el funcionamiento de una zona de carga compartida, donde varios repartidores retiran y entregan pedidos de manera concurrente.
 
-SpeedFast es un sistema de gestión de pedidos que trabaja con distintos tipos de entregas.
+## Funcionamiento
 
-En esta etapa se agregó **programación concurrente en Java**, permitiendo que varios repartidores realicen entregas al mismo tiempo.
+El sistema permite:
 
----
+- Agregar pedidos a una zona de carga.
+- Ejecutar tres repartidores en paralelo.
+- Retirar los pedidos de manera sincronizada.
+- Evitar que un pedido sea retirado por más de un repartidor.
+- Actualizar el estado del pedido durante la entrega.
+- Mostrar el proceso mediante mensajes por consola.
+
+## Estados del pedido
+
+Los pedidos pueden tener los siguientes estados:
+
+- `PENDIENTE`
+- `EN_REPARTO`
+- `ENTREGADO`
 
 ## Clases principales
 
@@ -16,72 +29,20 @@ En esta etapa se agregó **programación concurrente en Java**, permitiendo que 
 - `PedidoComida`
 - `PedidoEncomienda`
 - `PedidoExpress`
+- `EstadoPedido`
+- `ZonaDeCarga`
 - `Repartidor`
 - `Main`
 
-También se utilizan las interfaces:
+La clase `ZonaDeCarga` utiliza métodos `synchronized` para controlar el acceso de los repartidores a la lista compartida de pedidos.
 
-- `Despachable`
-- `Cancelable`
-- `Rastreable`
-
----
-
-## Concurrencia
-
-La clase `Repartidor` implementa `Runnable` y contiene una lista de pedidos asignados.
-
-Cada repartidor ejecuta sus entregas mediante el método:
-
-```java
-run()
-```
-
-Para simular el tiempo de entrega se utiliza:
-
-```java
-Thread.sleep()
-```
-
-Los repartidores se ejecutan en paralelo utilizando:
-
-```java
-ExecutorService
-```
-
----
-
-## Funcionamiento
-
-El programa:
-
-- Crea diferentes tipos de pedidos.
-- Crea tres repartidores.
-- Asigna dos pedidos a cada repartidor.
-- Ejecuta las entregas de forma concurrente.
-- Muestra el avance de cada repartidor por consola.
-
----
-
-## Conceptos utilizados
-
-- Abstracción
-- Herencia
-- Polimorfismo
-- Interfaces
-- `Runnable`
-- `Thread.sleep()`
-- `ExecutorService`
-- Manejo de excepciones
-
----
-
-## Tecnologías
+## Herramientas utilizadas
 
 - Java
 - IntelliJ IDEA
-- Git
-- GitHub
+- ExecutorService
+- Runnable
+- Git y GitHub
 
 ---
 
