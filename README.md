@@ -1,51 +1,28 @@
-# SpeedFast - Semana 5
+# SpeedFast Semana 6
 
-Proyecto correspondiente a la actividad de la **Semana 5** de la asignatura Desarrollo Orientado a Objetos II.
+Proyecto correspondiente a la Semana 6 de Desarrollo Orientado a Objetos II.
 
-El programa simula el funcionamiento de una zona de carga compartida, donde varios repartidores retiran y entregan pedidos de manera concurrente.
+El programa incorpora una interfaz grafica desarrollada con Java Swing para registrar pedidos, visualizarlos en una tabla e iniciar entregas con varios repartidores.
 
-## Funcionamiento
+## Funciones
 
-El sistema permite:
+- Registrar pedidos de comida, encomienda y express.
+- Validar los datos ingresados.
+- Mostrar los pedidos mediante JTable.
+- Asignar repartidores e iniciar entregas concurrentes.
+- Actualizar el estado de los pedidos.
 
-- Agregar pedidos a una zona de carga.
-- Ejecutar tres repartidores en paralelo.
-- Retirar los pedidos de manera sincronizada.
-- Evitar que un pedido sea retirado por más de un repartidor.
-- Actualizar el estado del pedido durante la entrega.
-- Mostrar el proceso mediante mensajes por consola.
+## Estructura
 
-## Estados del pedido
+- `interfaces`: contratos implementados por los pedidos.
+- `modelo`: clases de pedidos, estados y repartidores.
+- `datos`: almacenamiento de pedidos en memoria.
+- `vista`: ventanas graficas del sistema.
+- `main`: inicio de la aplicacion.
 
-Los pedidos pueden tener los siguientes estados:
+## Ejecucion
 
-- `PENDIENTE`
-- `EN_REPARTO`
-- `ENTREGADO`
-
-## Clases principales
-
-- `Pedido`
-- `PedidoComida`
-- `PedidoEncomienda`
-- `PedidoExpress`
-- `EstadoPedido`
-- `ZonaDeCarga`
-- `Repartidor`
-- `Main`
-
-La clase `ZonaDeCarga` utiliza métodos `synchronized` para controlar el acceso de los repartidores a la lista compartida de pedidos.
-
-## Herramientas utilizadas
-
-- Java
-- IntelliJ IDEA
-- ExecutorService
-- Runnable
-- Git y GitHub
-
----
+Ejecutar la clase `Main` ubicada en el paquete `main`.
 
 ## Autor
-
-Daniel González
+Daniel González Salinas
