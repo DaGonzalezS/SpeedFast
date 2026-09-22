@@ -1,6 +1,7 @@
 package model;
 
 import data.ZonaDeCarga;
+
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Repartidor implements Runnable {
@@ -22,7 +23,6 @@ public class Repartidor implements Runnable {
 
         while ((pedido = zonaDeCarga.retirarPedido()) != null) {
             pedido.asignarRepartidor(nombre);
-            pedido.setEstado(EstadoPedido.EN_REPARTO);
 
             System.out.println("[Repartidor - " + nombre + "] Retirando "
                     + pedido.getClass().getSimpleName()
@@ -49,6 +49,6 @@ public class Repartidor implements Runnable {
             System.out.println();
         }
 
-        System.out.println("[Repartidor - " + nombre + "] No quedan pedidos.");
+        System.out.println("[Repartidor - " + nombre + "] No quedan pedidos pendientes.");
     }
 }

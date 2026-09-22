@@ -3,6 +3,7 @@ package model;
 import interfaces.Cancelable;
 import interfaces.Despachable;
 import interfaces.Rastreable;
+import model.EstadoPedido;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,12 +65,20 @@ public abstract class Pedido implements Despachable, Cancelable, Rastreable {
         return estado;
     }
 
-    public void setEstado(EstadoPedido nuevoEstado) {
-        this.estado = nuevoEstado;
+    public void setEstado(EstadoPedido estado) {
+        this.estado = estado;
+    }
+
+    public boolean isCancelado() {
+        return cancelado;
     }
 
     public boolean estaDisponible() {
         return !cancelado && estado == EstadoPedido.PENDIENTE;
+    }
+
+    public String getTipo() {
+        return getClass().getSimpleName().replace("Pedido", "");
     }
 
     public void mostrarResumen() {

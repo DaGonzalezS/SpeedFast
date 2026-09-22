@@ -1,5 +1,6 @@
 package data;
 
+import model.EstadoPedido;
 import model.Pedido;
 
 import java.util.ArrayList;
@@ -10,26 +11,45 @@ public class ZonaDeCarga {
 
     public ZonaDeCarga() {
         pedidos = new ArrayList<>();
-        System.out.println("[Zona de carga inicializada]");
     }
 
     public synchronized void agregarPedido(Pedido pedido) {
         pedidos.add(pedido);
-        System.out.println("Pedido #" + pedido.getId()
-                + " agregado. Destino: " + pedido.getDireccionEntrega());
+    }
+
+    public synchronized boolean existePedido(int id) {
+        for (Pedido pedido : pedidos) {
+            if (pedido.getId() == id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public synchronized List<Pedido> getPedidos() {
+        return new ArrayList<>(pedidos);
     }
 
     public synchronized Pedido retirarPedido() {
-        for (int i = 0; i < pedidos.size(); i++) {
-            Pedido pedido = pedidos.get(i);
-
+        for (Pedido pedido : pedidos) {
             if (pedido.estaDisponible()) {
-                pedidos.remove(i);
+                pedido.setEstado(EstadoPedido.EN_REPARTO);
                 return pedido;
             }
         }
 
         return null;
+    }
+
+    public synchronized boolean hayPedidosPendientes() {
+        for (Pedido pedido : pedidos) {
+            if (pedido.estaDisponible()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public synchronized boolean estaVacia() {
