@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ZonaDeCarga {
+
     private final List<Pedido> pedidos;
 
     public ZonaDeCarga() {
@@ -17,23 +18,13 @@ public class ZonaDeCarga {
         pedidos.add(pedido);
     }
 
-    public synchronized boolean existePedido(int id) {
-        for (Pedido pedido : pedidos) {
-            if (pedido.getId() == id) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public synchronized List<Pedido> getPedidos() {
         return new ArrayList<>(pedidos);
     }
 
     public synchronized Pedido retirarPedido() {
         for (Pedido pedido : pedidos) {
-            if (pedido.estaDisponible()) {
+            if (pedido.getEstado() == EstadoPedido.PENDIENTE) {
                 pedido.setEstado(EstadoPedido.EN_REPARTO);
                 return pedido;
             }
@@ -42,17 +33,19 @@ public class ZonaDeCarga {
         return null;
     }
 
-    public synchronized boolean hayPedidosPendientes() {
-        for (Pedido pedido : pedidos) {
-            if (pedido.estaDisponible()) {
-                return true;
-            }
-        }
-
-        return false;
+    public synchronized boolean eliminarPedido(int idPedido) {
+        return pedidos.removeIf(pedido -> pedido.getIdPedido() == idPedido);
     }
 
-    public synchronized boolean estaVacia() {
-        return pedidos.isEmpty();
+    public synchronized void mostrarPedidos() {
+        if (pedidos.isEmpty()) {
+            System.out.println("No hay pedidos en la zona de carga.");
+            return;
+        }
+
+        for (Pedido pedido : pedidos) {
+            pedido.mostrarResumen();
+            System.out.println();
+        }
     }
 }

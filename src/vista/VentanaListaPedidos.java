@@ -1,77 +1,56 @@
 package vista;
 
-import data.ZonaDeCarga;
-import model.Pedido;
+import dao.PedidoDAO;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.util.List;
 
 public class VentanaListaPedidos extends JFrame {
-    private final ZonaDeCarga zonaDeCarga;
-    private final DefaultTableModel modeloTabla;
 
-    public VentanaListaPedidos(ZonaDeCarga zonaDeCarga) {
-        this.zonaDeCarga = zonaDeCarga;
+    private final DefaultTableModel modelo;
+    private final JTable tabla;
 
-        setTitle("Listado de pedidos");
-        setSize(800, 400);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    public VentanaListaPedidos() {
+        setTitle("Pedidos almacenados");
+        setSize(650, 350);
         setLocationRelativeTo(null);
-        setLayout(null);
-        setResizable(false);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JLabel lblTitulo = new JLabel("LISTADO DE PEDIDOS");
-        lblTitulo.setBounds(325, 15, 180, 25);
-        add(lblTitulo);
-
-        String[] columnas = {
-                "ID", "Tipo", "Direccion", "Distancia", "Repartidor", "Estado"
-        };
-
-        modeloTabla = new DefaultTableModel(columnas, 0) {
+        modelo = new DefaultTableModel(
+                new Object[]{"ID", "Direccion", "Tipo", "Estado"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
 
-        JTable tablaPedidos = new JTable(modeloTabla);
-        JScrollPane scrollPane = new JScrollPane(tablaPedidos);
-        scrollPane.setBounds(30, 55, 725, 235);
-        add(scrollPane);
+        tabla = new JTable(modelo);
 
-        JButton btnActualizar = new JButton("Actualizar tabla");
-        btnActualizar.setBounds(235, 310, 150, 30);
+        JButton btnActualizar = new JButton("Actualizar");
         btnActualizar.addActionListener(e -> cargarPedidos());
-        add(btnActualizar);
 
-        JButton btnCerrar = new JButton("Cerrar");
-        btnCerrar.setBounds(410, 310, 120, 30);
-        btnCerrar.addActionListener(e -> dispose());
-        add(btnCerrar);
+        add(new JScrollPane(tabla), BorderLayout.CENTER);
+        add(btnActualizar, BorderLayout.SOUTH);
 
         cargarPedidos();
         setVisible(true);
     }
 
     private void cargarPedidos() {
-        modeloTabla.setRowCount(0);
+        modelo.setRowCount(0);
 
-        for (Pedido pedido : zonaDeCarga.getPedidos()) {
-            Object[] fila = {
+        List<PedidoDAO.PedidoRegistro> pedidos =
+                new PedidoDAO().listarTodos();
+
+        for (PedidoDAO.PedidoRegistro pedido : pedidos) {
+            modelo.addRow(new Object[]{
                     pedido.getId(),
+                    pedido.getDireccion(),
                     pedido.getTipo(),
-                    pedido.getDireccionEntrega(),
-                    pedido.getDistanciaKm() + " km",
-                    pedido.getRepartidor(),
                     pedido.getEstado()
-            };
-
-            modeloTabla.addRow(fila);
+            });
         }
     }
 }

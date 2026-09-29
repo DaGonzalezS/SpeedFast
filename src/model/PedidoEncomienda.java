@@ -1,8 +1,8 @@
 package model;
 
 public class PedidoEncomienda extends Pedido {
-    public PedidoEncomienda(int id, String direccionEntrega, double distanciaKm) {
-        super(id, direccionEntrega, distanciaKm);
+    public PedidoEncomienda(int idPedido, String direccionEntrega, double distanciaKm) {
+        super(idPedido, direccionEntrega, distanciaKm);
     }
 
     @Override

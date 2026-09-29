@@ -1,16 +1,20 @@
 package model;
 
-import data.ZonaDeCarga;
+public class Repartidor {
+    private int id;
+    private String nombre;
 
-import java.util.concurrent.ThreadLocalRandom;
-
-public class Repartidor implements Runnable {
-    private final String nombre;
-    private final ZonaDeCarga zonaDeCarga;
-
-    public Repartidor(String nombre, ZonaDeCarga zonaDeCarga) {
+    public Repartidor(int id, String nombre) {
+        this.id = id;
         this.nombre = nombre;
-        this.zonaDeCarga = zonaDeCarga;
+    }
+
+    public Repartidor(String nombre) {
+        this(0, nombre);
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getNombre() {
@@ -18,37 +22,7 @@ public class Repartidor implements Runnable {
     }
 
     @Override
-    public void run() {
-        Pedido pedido;
-
-        while ((pedido = zonaDeCarga.retirarPedido()) != null) {
-            pedido.asignarRepartidor(nombre);
-
-            System.out.println("[Repartidor - " + nombre + "] Retirando "
-                    + pedido.getClass().getSimpleName()
-                    + " #" + pedido.getId() + "...");
-            System.out.println("[Repartidor - " + nombre + "] Estado: "
-                    + pedido.getEstado());
-            System.out.println("[Repartidor - " + nombre + "] Entregando pedido #"
-                    + pedido.getId() + " en "
-                    + pedido.getDireccionEntrega() + "...");
-
-            try {
-                int pausa = ThreadLocalRandom.current().nextInt(1000, 3001);
-                Thread.sleep(pausa);
-            } catch (InterruptedException e) {
-                System.out.println("[Repartidor - " + nombre
-                        + "] La entrega fue interrumpida.");
-                Thread.currentThread().interrupt();
-                return;
-            }
-
-            pedido.despachar();
-            System.out.println("[Repartidor - " + nombre + "] Pedido #"
-                    + pedido.getId() + " - Estado: " + pedido.getEstado());
-            System.out.println();
-        }
-
-        System.out.println("[Repartidor - " + nombre + "] No quedan pedidos pendientes.");
+    public String toString() {
+        return nombre;
     }
 }

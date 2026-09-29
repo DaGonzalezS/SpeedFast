@@ -1,157 +1,93 @@
 package vista;
 
-import data.ZonaDeCarga;
-import model.Pedido;
-import model.PedidoComida;
-import model.PedidoEncomienda;
-import model.PedidoExpress;
+import dao.PedidoDAO;
+import model.*;
 
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JTextField;
+import javax.swing.*;
+import java.awt.*;
 
 public class VentanaRegistroPedido extends JFrame {
-    private final ZonaDeCarga zonaDeCarga;
-    private final JTextField txtId;
-    private final JTextField txtDireccion;
-    private final JTextField txtDistancia;
-    private final JComboBox<String> cmbTipo;
 
-    public VentanaRegistroPedido(ZonaDeCarga zonaDeCarga) {
-        this.zonaDeCarga = zonaDeCarga;
+    private final JTextField txtId = new JTextField();
+    private final JTextField txtDireccion = new JTextField();
+    private final JTextField txtDistancia = new JTextField();
+    private final JComboBox<String> cbTipo =
+            new JComboBox<>(new String[]{"COMIDA", "ENCOMIENDA", "EXPRESS"});
 
+    public VentanaRegistroPedido() {
         setTitle("Registrar pedido");
-        setSize(450, 350);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setSize(420, 300);
         setLocationRelativeTo(null);
-        setLayout(null);
-        setResizable(false);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        JLabel lblTitulo = new JLabel("REGISTRO DE PEDIDOS");
-        lblTitulo.setBounds(145, 20, 200, 25);
-        add(lblTitulo);
+        JPanel panel = new JPanel(new GridLayout(5, 2, 10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JLabel lblId = new JLabel("ID:");
-        lblId.setBounds(70, 70, 100, 25);
-        add(lblId);
-
-        txtId = new JTextField();
-        txtId.setBounds(180, 70, 180, 25);
-        add(txtId);
-
-        JLabel lblDireccion = new JLabel("Direccion:");
-        lblDireccion.setBounds(70, 110, 100, 25);
-        add(lblDireccion);
-
-        txtDireccion = new JTextField();
-        txtDireccion.setBounds(180, 110, 180, 25);
-        add(txtDireccion);
-
-        JLabel lblDistancia = new JLabel("Distancia (km):");
-        lblDistancia.setBounds(70, 150, 110, 25);
-        add(lblDistancia);
-
-        txtDistancia = new JTextField();
-        txtDistancia.setBounds(180, 150, 180, 25);
-        add(txtDistancia);
-
-        JLabel lblTipo = new JLabel("Tipo:");
-        lblTipo.setBounds(70, 190, 100, 25);
-        add(lblTipo);
-
-        cmbTipo = new JComboBox<>(new String[]{"Comida", "Encomienda", "Express"});
-        cmbTipo.setBounds(180, 190, 180, 25);
-        add(cmbTipo);
+        panel.add(new JLabel("ID:"));
+        panel.add(txtId);
+        panel.add(new JLabel("Direccion:"));
+        panel.add(txtDireccion);
+        panel.add(new JLabel("Distancia (km):"));
+        panel.add(txtDistancia);
+        panel.add(new JLabel("Tipo:"));
+        panel.add(cbTipo);
 
         JButton btnGuardar = new JButton("Guardar");
-        btnGuardar.setBounds(95, 245, 110, 30);
-        btnGuardar.addActionListener(e -> guardarPedido());
-        add(btnGuardar);
+        JButton btnLimpiar = new JButton("Limpiar");
+        panel.add(btnGuardar);
+        panel.add(btnLimpiar);
 
-        JButton btnCerrar = new JButton("Cerrar");
-        btnCerrar.setBounds(230, 245, 110, 30);
-        btnCerrar.addActionListener(e -> dispose());
-        add(btnCerrar);
+        btnGuardar.addActionListener(e -> guardar());
+        btnLimpiar.addActionListener(e -> limpiar());
 
+        add(panel);
         setVisible(true);
     }
 
-    private void guardarPedido() {
-        String textoId = txtId.getText().trim();
-        String direccion = txtDireccion.getText().trim();
-        String textoDistancia = txtDistancia.getText().trim();
-
-        if (textoId.isEmpty() || direccion.isEmpty() || textoDistancia.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Debe completar todos los campos.",
-                    "Datos incompletos",
-                    JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
+    private void guardar() {
         try {
-            int id = Integer.parseInt(textoId);
-            double distancia = Double.parseDouble(textoDistancia.replace(',', '.'));
+            int id = Integer.parseInt(txtId.getText().trim());
+            String direccion = txtDireccion.getText().trim();
+            double distancia = Double.parseDouble(txtDistancia.getText().trim());
+            String tipo = (String) cbTipo.getSelectedItem();
 
-            if (id <= 0) {
-                JOptionPane.showMessageDialog(this,
-                        "El ID debe ser mayor que cero.",
-                        "ID no valido",
-                        JOptionPane.WARNING_MESSAGE);
+            if (direccion.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ingrese una direccion.");
                 return;
             }
 
-            if (distancia <= 0) {
-                JOptionPane.showMessageDialog(this,
-                        "La distancia debe ser mayor que cero.",
-                        "Distancia no valida",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            if (zonaDeCarga.existePedido(id)) {
-                JOptionPane.showMessageDialog(this,
-                        "Ya existe un pedido con ese ID.",
-                        "ID repetido",
-                        JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-
-            String tipo = (String) cmbTipo.getSelectedItem();
             Pedido pedido;
 
-            if ("Comida".equals(tipo)) {
-                pedido = new PedidoComida(id, direccion, distancia);
-            } else if ("Encomienda".equals(tipo)) {
-                pedido = new PedidoEncomienda(id, direccion, distancia);
-            } else {
-                pedido = new PedidoExpress(id, direccion, distancia);
+            switch (tipo) {
+                case "COMIDA" ->
+                        pedido = new PedidoComida(id, direccion, distancia);
+                case "ENCOMIENDA" ->
+                        pedido = new PedidoEncomienda(id, direccion, distancia);
+                default ->
+                        pedido = new PedidoExpress(id, direccion, distancia);
             }
 
-            zonaDeCarga.agregarPedido(pedido);
+            boolean guardado = new PedidoDAO().guardar(pedido);
 
-            JOptionPane.showMessageDialog(this,
-                    "Pedido registrado correctamente.",
-                    "Registro exitoso",
-                    JOptionPane.INFORMATION_MESSAGE);
+            if (guardado) {
+                JOptionPane.showMessageDialog(
+                        this, "Pedido guardado correctamente.");
+                limpiar();
+            } else {
+                JOptionPane.showMessageDialog(
+                        this, "No se pudo guardar el pedido.");
+            }
 
-            limpiarCampos();
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this,
-                    "El ID y la distancia deben ser valores numericos.",
-                    "Datos no validos",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    this, "ID y distancia deben ser numericos.");
         }
     }
 
-    private void limpiarCampos() {
+    private void limpiar() {
         txtId.setText("");
         txtDireccion.setText("");
         txtDistancia.setText("");
-        cmbTipo.setSelectedIndex(0);
-        txtId.requestFocus();
+        cbTipo.setSelectedIndex(0);
     }
 }
