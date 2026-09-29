@@ -1,28 +1,32 @@
-# SpeedFast Semana 6
+# SpeedFast Semana 7
 
-Proyecto correspondiente a la Semana 6 de Desarrollo Orientado a Objetos II.
+## Proyecto correspondiente a la Semana 7 de Desarrollo Orientado a Objetos II.
 
-El programa incorpora una interfaz grafica desarrollada con Java Swing para registrar pedidos, visualizarlos en una tabla e iniciar entregas con varios repartidores.
+El programa incorpora una interfaz gráfica desarrollada con Java Swing para gestionar pedidos, repartidores y entregas. Además, se implementó persistencia de datos utilizando Oracle Database y JDBC.
 
-## Funciones
-
+### Funciones.
 - Registrar pedidos de comida, encomienda y express.
-- Validar los datos ingresados.
+- Registrar repartidores.
+- Registrar entregas.
 - Mostrar los pedidos mediante JTable.
-- Asignar repartidores e iniciar entregas concurrentes.
+- Consultar pedidos y repartidores.
 - Actualizar el estado de los pedidos.
+- Guardar y consultar información en Oracle Database.
+- Conectar Java con Oracle mediante JDBC.
+- Base de Datos
 
-## Estructura
+### Se utilizan las siguientes tablas:
+- PEDIDO
+- REPARTIDOR
+- ENTREGA
+  
+### Estructura.
+- dao: clases encargadas de la conexión y acceso a Oracle.
+- data: almacenamiento y manejo de datos.
+- interfaces: interfaces utilizadas por las clases del sistema.
+- model: clases de pedidos, estados y repartidores.
+- ui: clases relacionadas con el inicio de la aplicación.
+- vista: ventanas e interfaz gráfica del sistema.
 
-- `interfaces`: contratos implementados por los pedidos.
-- `modelo`: clases de pedidos, estados y repartidores.
-- `datos`: almacenamiento de pedidos en memoria.
-- `vista`: ventanas graficas del sistema.
-- `main`: inicio de la aplicacion.
-
-## Ejecucion
-
-Ejecutar la clase `Main` ubicada en el paquete `main`.
-
-## Autor
-Daniel González Salinas
+### Autor
+Daniel González Salinas.
