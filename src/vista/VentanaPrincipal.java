@@ -1,39 +1,33 @@
 package vista;
 
 import javax.swing.*;
-import java.awt.*;
+import java.sql.SQLException;
 
 public class VentanaPrincipal extends JFrame {
 
+    private final PanelRepartidores repartidores;
+    private final PanelPedidos pedidos;
+    private final PanelEntregas entregas;
+
     public VentanaPrincipal() {
-        setTitle("SpeedFast - Semana 7");
-        setSize(500, 330);
-        setLocationRelativeTo(null);
+
+        setTitle("SpeedFast - Semana 8");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(950, 600); setLocationRelativeTo(null);
+        repartidores = new PanelRepartidores(this::refrescar);
+        pedidos = new PanelPedidos(this::refrescar);
+        entregas = new PanelEntregas(this::refrescar);
+        JTabbedPane pestanas = new JTabbedPane();
+        pestanas.addTab("Repartidores", repartidores); pestanas.addTab("Pedidos", pedidos); pestanas.addTab("Entregas", entregas);
+        add(pestanas); setVisible(true);
+        refrescar();
+    }
 
-        JPanel panel = new JPanel(new GridLayout(5, 1, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(25, 40, 25, 40));
-
-        JLabel titulo = new JLabel("SPEEDFAST", SwingConstants.CENTER);
-        titulo.setFont(new Font("Arial", Font.BOLD, 24));
-
-        JButton btnPedido = new JButton("Registrar pedido");
-        JButton btnRepartidor = new JButton("Registrar repartidor");
-        JButton btnLista = new JButton("Listar pedidos");
-        JButton btnRepartidores = new JButton("Listar repartidores");
-
-        btnPedido.addActionListener(e -> new VentanaRegistroPedido());
-        btnRepartidor.addActionListener(e -> new VentanaRegistroRepartidor());
-        btnLista.addActionListener(e -> new VentanaListaPedidos());
-        btnRepartidores.addActionListener(e -> new VentanaListaRepartidores());
-
-        panel.add(titulo);
-        panel.add(btnPedido);
-        panel.add(btnRepartidor);
-        panel.add(btnLista);
-        panel.add(btnRepartidores);
-
-        add(panel);
-        setVisible(true);
+    private void refrescar() {
+        try {
+            repartidores.cargar(); pedidos.cargar();
+            entregas.cargarCombos(pedidos.registros, repartidores.registros);
+            entregas.cargar();
+        } catch (SQLException e) { Mensajes.error(this, e); }
     }
 }
