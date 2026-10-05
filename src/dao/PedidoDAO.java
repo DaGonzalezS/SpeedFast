@@ -1,82 +1,77 @@
 package dao;
 
-import model.Pedido;
+import model.*;
+import interfaces.CrudDAO;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PedidoDAO {
+public class PedidoDAO implements CrudDAO<Pedido> {
 
-    public boolean guardar(Pedido pedido) {
-        String sql = "INSERT INTO pedido (id, direccion, tipo, estado) VALUES (?, ?, ?, ?)";
+    @Override public int create(Pedido entidad) throws SQLException {
 
-        try (Connection con = ConexionDB.conectar();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        String sql = "INSERT INTO pedido (direccion, tipo, estado) VALUES (?, ?, ?)";
+        try (Connection con = ConexionDB.conectar(); PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, entidad.getDireccionEntrega());
+            ps.setString(2, entidad.getTipo().name());
+            ps.setString(3, entidad.getEstado().name());
+            con.setAutoCommit(false);
 
-            ps.setInt(1, pedido.getIdPedido());
-            ps.setString(2, pedido.getDireccionEntrega());
-            ps.setString(3, obtenerTipo(pedido));
-            ps.setString(4, pedido.getEstado().name());
+            try {
+                if (ps.executeUpdate() != 1) throw new SQLException("No se pudo crear el registro.");
+                int idGenerado;
 
-            ps.executeUpdate();
-            return true;
+                try (ResultSet claves = ps.getGeneratedKeys()) {
+                    if (!claves.next()) throw new SQLException("MySQL no devolvio el ID generado.");
+                    idGenerado = claves.getInt(1);
+                    if (idGenerado <= 0) throw new SQLException("MySQL devolvio un ID invalido.");
+                }
+                con.commit();
 
-        } catch (SQLException e) {
-            System.out.println("Error al guardar pedido: " + e.getMessage());
-            return false;
+                return idGenerado;
+
+            } catch (SQLException e) {
+                try { con.rollback(); } catch (SQLException falloRollback) { e.addSuppressed(falloRollback); }
+                throw e;
+            }
         }
     }
 
-    public List<PedidoRegistro> listarTodos() {
-        List<PedidoRegistro> lista = new ArrayList<>();
+    @Override public List<Pedido> readAll() throws SQLException {
+
+        List<Pedido> lista = new ArrayList<>();
         String sql = "SELECT id, direccion, tipo, estado FROM pedido ORDER BY id";
 
-        try (Connection con = ConexionDB.conectar();
-             PreparedStatement ps = con.prepareStatement(sql);
+        try (Connection con = ConexionDB.conectar(); PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                lista.add(new PedidoRegistro(
-                        rs.getInt("id"),
-                        rs.getString("direccion"),
-                        rs.getString("tipo"),
-                        rs.getString("estado")
-                ));
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Error al listar pedidos: " + e.getMessage());
+            while (rs.next()) lista.add(Pedido.crear(rs.getInt("id"), rs.getString("direccion"), TipoPedido.valueOf(rs.getString("tipo")), EstadoPedido.valueOf(rs.getString("estado"))));
         }
 
         return lista;
     }
 
-    private String obtenerTipo(Pedido pedido) {
-        if (pedido.getClass().getSimpleName().equals("PedidoComida")) {
-            return "COMIDA";
+    @Override public boolean update(Pedido entidad) throws SQLException {
+
+        String sql = "UPDATE pedido SET direccion = ?, tipo = ?, estado = ? WHERE id = ?";
+
+        try (Connection con = ConexionDB.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, entidad.getDireccionEntrega());
+            ps.setString(2, entidad.getTipo().name());
+            ps.setString(3, entidad.getEstado().name());
+            ps.setInt(4, entidad.getIdPedido());
+
+            return ps.executeUpdate() == 1;
         }
-        if (pedido.getClass().getSimpleName().equals("PedidoEncomienda")) {
-            return "ENCOMIENDA";
-        }
-        return "EXPRESS";
     }
 
-    public static class PedidoRegistro {
-        private final int id;
-        private final String direccion;
-        private final String tipo;
-        private final String estado;
+    @Override public boolean delete(int id) throws SQLException {
 
-        public PedidoRegistro(int id, String direccion, String tipo, String estado) {
-            this.id = id;
-            this.direccion = direccion;
-            this.tipo = tipo;
-            this.estado = estado;
+        String sql = "DELETE FROM pedido WHERE id = ?";
+
+        try (Connection con = ConexionDB.conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, id);
+
+            return ps.executeUpdate() == 1;
         }
-
-        public int getId() { return id; }
-        public String getDireccion() { return direccion; }
-        public String getTipo() { return tipo; }
-        public String getEstado() { return estado; }
     }
 }

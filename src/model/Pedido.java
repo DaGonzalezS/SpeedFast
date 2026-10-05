@@ -1,82 +1,32 @@
 package model;
 
-import interfaces.Cancelable;
-import interfaces.Despachable;
-import interfaces.Rastreable;
+public abstract class Pedido {
+    private final int idPedido;
+    private final String direccionEntrega;
+    private final EstadoPedido estado;
 
-public abstract class Pedido implements Despachable, Cancelable, Rastreable {
-    private int idPedido;
-    private String direccionEntrega;
-    private double distanciaKm;
-    private String repartidor;
-    private EstadoPedido estado;
-
-    public Pedido(int idPedido, String direccionEntrega, double distanciaKm) {
+    protected Pedido(int idPedido, String direccionEntrega, EstadoPedido estado) {
+        if (idPedido < 0 || direccionEntrega == null || direccionEntrega.trim().isEmpty()
+                || direccionEntrega.trim().length() > 255 || estado == null) {
+            throw new IllegalArgumentException("Ingrese una direccion de 1 a 255 caracteres y un estado valido.");
+        }
         this.idPedido = idPedido;
-        this.direccionEntrega = direccionEntrega;
-        this.distanciaKm = distanciaKm;
-        this.estado = EstadoPedido.PENDIENTE;
-    }
-
-    public int getIdPedido() {
-        return idPedido;
-    }
-
-    public String getDireccionEntrega() {
-        return direccionEntrega;
-    }
-
-    public double getDistanciaKm() {
-        return distanciaKm;
-    }
-
-    public String getRepartidor() {
-        return repartidor;
-    }
-
-    public void setRepartidor(String repartidor) {
-        this.repartidor = repartidor;
-    }
-
-    public EstadoPedido getEstado() {
-        return estado;
-    }
-
-    public void setEstado(EstadoPedido estado) {
+        this.direccionEntrega = direccionEntrega.trim();
         this.estado = estado;
     }
+    public int getIdPedido() { return idPedido; }
+    public String getDireccionEntrega() { return direccionEntrega; }
+    public EstadoPedido getEstado() { return estado; }
+    public abstract TipoPedido getTipo();
 
-    public abstract void asignarRepartidor();
-
-    public void asignarRepartidor(String nombreRepartidor) {
-        setRepartidor(nombreRepartidor);
+    public static Pedido crear(int id, String direccion, TipoPedido tipo, EstadoPedido estado) {
+        if (tipo == null) throw new IllegalArgumentException("Seleccione un tipo de pedido.");
+        return switch (tipo) {
+            case COMIDA -> new PedidoComida(id, direccion, estado);
+            case ENCOMIENDA -> new PedidoEncomienda(id, direccion, estado);
+            case EXPRESS -> new PedidoExpress(id, direccion, estado);
+        };
     }
 
-    public abstract int calcularTiempoEntrega();
-
-    public void mostrarResumen() {
-        System.out.println("Pedido #" + idPedido);
-        System.out.println("Direccion: " + direccionEntrega);
-        System.out.println("Distancia: " + distanciaKm + " km");
-        System.out.println("Estado: " + estado);
-        System.out.println("Repartidor: " +
-                (repartidor == null ? "Sin asignar" : repartidor));
-    }
-
-    @Override
-    public void despachar() {
-        estado = EstadoPedido.EN_REPARTO;
-        System.out.println("Pedido #" + idPedido + " despachado.");
-    }
-
-    @Override
-    public void cancelar() {
-        System.out.println("Pedido #" + idPedido + " cancelado.");
-    }
-
-    @Override
-    public void verHistorial() {
-        System.out.println("Historial del pedido #" + idPedido +
-                ": estado actual = " + estado);
-    }
+    @Override public String toString() { return idPedido + " - " + direccionEntrega; }
 }
