@@ -1,32 +1,36 @@
-# SpeedFast Semana 7
+# SpeedFast Semana 8
 
-## Proyecto correspondiente a la Semana 7 de Desarrollo Orientado a Objetos II.
+## Proyecto correspondiente a la Semana 8 de Desarrollo Orientado a Objetos II
 
-El programa incorpora una interfaz gráfica desarrollada con Java Swing para gestionar pedidos, repartidores y entregas. Además, se implementó persistencia de datos utilizando Oracle Database y JDBC.
+Aplicación desarrollada con Java Swing para gestionar pedidos, repartidores y entregas mediante operaciones CRUD, utilizando MySQL y JDBC.
 
-### Funciones.
-- Registrar pedidos de comida, encomienda y express.
-- Registrar repartidores.
-- Registrar entregas.
-- Mostrar los pedidos mediante JTable.
-- Consultar pedidos y repartidores.
+### Funciones
+- Registrar, consultar, editar y eliminar pedidos, repartidores y entregas.
+- Gestionar pedidos de comida, encomienda y express.
 - Actualizar el estado de los pedidos.
-- Guardar y consultar información en Oracle Database.
-- Conectar Java con Oracle mediante JDBC.
-- Base de Datos
+- Asociar entregas con pedidos y repartidores.
+- Mostrar registros mediante JTable.
+- Generar identificadores automáticamente.
+- Validar datos y mostrar mensajes de error.
 
-### Se utilizan las siguientes tablas:
-- PEDIDO
-- REPARTIDOR
-- ENTREGA
-  
-### Estructura.
-- dao: clases encargadas de la conexión y acceso a Oracle.
-- data: almacenamiento y manejo de datos.
-- interfaces: interfaces utilizadas por las clases del sistema.
-- model: clases de pedidos, estados y repartidores.
-- ui: clases relacionadas con el inicio de la aplicación.
-- vista: ventanas e interfaz gráfica del sistema.
+### Base de datos
+Se utiliza la base de datos `speedfast_db` con las siguientes tablas:
+- pedido
+- repartidor
+- entrega
+
+### Estructura
+- dao: conexión y acceso a MySQL.
+- interfaces: contrato CRUD utilizado por los DAO.
+- model: clases de pedidos, estados, repartidores y entregas.
+- ui: inicio de la aplicación.
+- vista: formularios y componentes gráficos.
+
+### Ejecución
+1. Ejecutar `sql/speedfast_db.sql` en MySQL Workbench.
+2. Abrir el proyecto en IntelliJ IDEA con Java 17 y cargar las dependencias Maven.
+3. Crear `db.properties` junto al `pom.xml` y configurar la URL, el usuario y la contraseña de MySQL.
+4. Ejecutar `ui.Main` con MySQL encendido.
 
 ### Autor
 Daniel González Salinas.
